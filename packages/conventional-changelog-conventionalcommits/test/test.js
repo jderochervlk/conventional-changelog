@@ -35,6 +35,7 @@ betterThanBefore.setups([
     gitDummyCommit(['feat(awesome): adress EXAMPLE-1'])
     gitDummyCommit(['chore(deps): upgrade example from 1 to 2'])
     gitDummyCommit(['chore(release): release 0.0.0'])
+    gitDummyCommit(['feat: new page', '* fix: resolved issue with slow loading modal\n some other thing\n'])
   },
   function () {
     gitDummyCommit(['feat(awesome): addresses the issue brought up in #133'])
@@ -90,6 +91,25 @@ betterThanBefore.setups([
 ])
 
 describe('conventionalcommits.org preset', function () {
+  it('should parse fixes in body', function (done) {
+    preparing(1)
+
+    conventionalChangelogCore({
+      config: preset
+    })
+      .on('error', function (err) {
+        done(err)
+      })
+      .pipe(through(function (chunk) {
+        chunk = chunk.toString()
+
+        expect(chunk).to.include('🐛 Fixes')
+        expect(chunk).to.include('⚠️ BREAKING CHANGES')
+        expect(chunk).not.to.include('some other thing')
+        expect(chunk).to.include('resolved issue with slow loading modal')
+      }))
+  })
+
   it('should work if there is no semver tag', function (done) {
     preparing(1)
 

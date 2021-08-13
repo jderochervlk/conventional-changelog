@@ -90,7 +90,21 @@ function getWriterOpts (config) {
       }
 
       commit.notes.forEach(note => {
-        note.title = 'BREAKING CHANGES'
+        const title = note.title.toLowerCase()
+
+        if (/breaking/.exec(title)) {
+          note.title = '⚠️ BREAKING CHANGES'
+        }
+        if (/fix/.exec(title)) {
+          note.title = '🐛 Fixes'
+        }
+        if (/perf/.exec(title)) {
+          note.title = '🚀 Performance'
+        }
+        if (/feat/.exec(title)) {
+          note.title = '🆕 Features'
+        }
+
         discard = false
       })
 

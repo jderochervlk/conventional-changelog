@@ -287,12 +287,16 @@ function parser (raw, options, regex) {
     return note
   })
 
+  const trimText = (text = '') => {
+    return text.split('\n')[0]
+  }
+
   const msg = _.merge(headerParts, mergeParts, {
     merge: merge,
     header: header,
     body: body ? trimOffNewlines(body) : null,
     footer: footer ? trimOffNewlines(footer) : null,
-    notes: notes,
+    notes: notes.map(note => ({ title: note.title, text: trimText(note.text) })),
     references: references,
     mentions: mentions,
     revert: revert
